@@ -10,7 +10,7 @@ import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@FieldDefaults(level= AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     @NonNull
     String login;
