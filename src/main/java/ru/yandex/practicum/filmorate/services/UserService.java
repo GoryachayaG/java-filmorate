@@ -30,7 +30,6 @@ public class UserService {
         return ++id;
     }
 
-    //создание пользователя; - присваивается id
     public User createUser(User user) {
         log.info("Получен запрос к эндпоинту PUT для создания пользователя с id = {}", id + 1);
 
@@ -51,7 +50,11 @@ public class UserService {
     }
 
     public Collection<User> findAllUsers() {
-        return userStorage.findAll();
+        return userStorage.getUsers();
+    }
+
+    public User findUserById(long userId) {
+        return userStorage.getUserById(userId);
     }
 
     private boolean isValid(User user) {
@@ -87,9 +90,8 @@ public class UserService {
         return true;
     }
 
-    //добавление в друзья
     //пользователям не надо одобрять заявки в друзья — добавляем сразу.
-    // То есть если Лена стала другом Саши, то это значит, что Саша теперь друг Лены.
+    //если Лена стала другом Саши, то это значит, что Саша теперь друг Лены.
     public User addFriend(Long userID, Long friendID) {
         if (!findAllUsers().contains(findUserById(friendID))) {
             throw new UserNotFoundException(String.format("Пользователь № %d не найден", friendID));
@@ -130,12 +132,5 @@ public class UserService {
             friends.add(findUserById(friendId));
         }
         return friends;
-    }
-
-    public User findUserById(long userId) {
-        return userStorage.findAll().stream()
-                .filter(x -> x.getId() == userId)
-                .findFirst()
-                .orElseThrow(() -> new UserNotFoundException(String.format("Пользователь № %d не найден", userId)));
     }
 }

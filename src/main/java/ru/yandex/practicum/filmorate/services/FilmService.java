@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ru.yandex.practicum.filmorate.exeptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exeptions.LikeAlreadyExistException;
 import ru.yandex.practicum.filmorate.exeptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exeptions.ValidationException;
@@ -54,7 +53,11 @@ public class FilmService {
     }
 
     public Collection<Film> findAllFilms() {
-        return filmStorage.findAll();
+        return filmStorage.getFilms();
+    }
+
+    public Film findFilmById(long filmId) {
+        return filmStorage.getFilmById(filmId);
     }
 
     // Если все ок, метод вернет true. Если хоть одно из условий верно, метод выкинет исключение
@@ -82,7 +85,6 @@ public class FilmService {
         return true;
     }
 
-    // добавление лайка
     // каждый пользователь может поставить лайк фильму только один раз.
     public Film addLike(Long filmId, Long userId) {
         if (findFilmById(filmId).getLikes().contains(userId)) {
@@ -106,15 +108,7 @@ public class FilmService {
 
     // вывод 10 наиболее популярных фильмов по количеству лайков.
     public List<Film> getTopFilms(Integer count) {
-        return filmStorage.findAll().stream().sorted((f1, f2) -> f2.getLikes().size() - f1.getLikes().size())
+        return filmStorage.getFilms().stream().sorted((f1, f2) -> f2.getLikes().size() - f1.getLikes().size())
                 .limit(count).collect(Collectors.toList());
-    }
-
-    //получать каждый фильм по уникальному идентификатору: GET .../users/{id}
-    public Film findFilmById(long filmId) {
-        return filmStorage.findAll().stream()
-                .filter(x -> x.getId() == filmId)
-                .findFirst()
-                .orElseThrow(() -> new FilmNotFoundException(String.format("Фильм № %d не найден", filmId)));
     }
 }

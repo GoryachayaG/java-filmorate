@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storages.user;
 
 import org.springframework.stereotype.Component;
-import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.exeptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -10,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-@Slf4j
 public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
 
@@ -23,17 +21,21 @@ public class InMemoryUserStorage implements UserStorage {
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
         } else {
-            throw new UserNotFoundException("Пользователя с таким id нет в базе");
+            throw new UserNotFoundException(String.format("Пользователя с id %d  нет в базе", user.getId()));
         }
         return user;
     }
 
-    public Collection<User> findAll() {
+    public void remove(User user) {
+        users.remove(user.getId());
+    }
+
+    public Collection<User> getUsers() {
         return users.values();
     }
 
-    //нужно ли
-    public Map<Long, User> getUsers() {
-        return users;
+    public User getUserById(long userId) {
+        return getUsers().stream().filter(x -> x.getId() == userId).findFirst()
+                .orElseThrow(() -> new UserNotFoundException(String.format("Пользователь № %d не найден", userId)));
     }
 }

@@ -12,31 +12,30 @@ import java.util.Map;
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Long, Film> films = new HashMap<>();
 
-
-    //добавление фильма
     public Film create(Film film) {
         films.put(film.getId(), film);
         return film;
     }
 
-    //обновление фильма
     public Film update(Film film) {
         if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
         } else {
-            throw new FilmNotFoundException("Фильма с таким id нет в базе");
+            throw new FilmNotFoundException(String.format("Фильма с id %d  нет в базе", film.getId()));
         }
         return film;
     }
 
-    //получение всех фильмов
-    public Collection<Film> findAll() {
+    public void remove(Film film) {
+        films.remove(film.getId());
+    }
+
+    public Collection<Film> getFilms() {
         return films.values();
     }
 
-    //предыдущий метод дублирует суть - только нужно обдумать, можно ли получить по номеру элемента, а не ай ди
-    // получить мапу с фильмами из хранилища
-    public Map<Long, Film> getFilms() {
-        return films;
+    public Film getFilmById(long filmId) {
+        return getFilms().stream().filter(x -> x.getId() == filmId).findFirst()
+                .orElseThrow(() -> new FilmNotFoundException(String.format("Фильм № %d не найден", filmId)));
     }
 }
