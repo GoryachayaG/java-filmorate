@@ -1,6 +1,6 @@
 # java-filmorate
 
-![ER-диаграмма]([https://github.com/GoryachayaG/java-filmorate/raw/assets/images/ERдиаграмма.png](https://github.com/GoryachayaG/java-filmorate/commit/88724e9eddcca9b3d01dccde29ab086f8e9ff316))
+![ER-диаграмма]([https://github.com/GoryachayaG/java-filmorate/blob/add-friends-likes/ERдиаграмма.png)
 
 
 ### - Film
