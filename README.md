@@ -3,11 +3,11 @@
 ![ER-диаграмма](https://github.com/GoryachayaG/java-filmorate/blob/add-friends-likes/ERдиаграмма.png)
 
 
-### - Film
+### - Films
 
 Содержит данные о фильмах
 
-### - Genre
+### - Genres
 
 Содержит данные о существующих жанрах
 
@@ -19,7 +19,7 @@
 
 Содержит данные о том, какой пользователь какой фильм лайкнул
 
-### - User
+### - Users
 
 Содержит данные о пользователях
 
@@ -46,24 +46,24 @@
 ### 1. Получение всех фильмов
 ```
 SELECT *
-FROM films
+FROM films;
 ```
 
 ### 2. Получение всех пользователей
 ```
 SELECT *
-FROM users
+FROM users;
 ```
 
 ### 3. Получение топ 5 наиболее популярных фильмов
 ```
-SELECT f.name
-	COUNT(l.user_id) AS rate
-FROM films AS f
-LEFT JOIN likes AS l ON f.film_id = l.film_id
-GROUP BY f.name
-ORDER BY rate DESC
-LIMIT 5;
+SELECT name
+FROM films
+WHERE film_id IN (SELECT film_id
+		FROM likes
+		GROUP BY film_id
+		ORDER BY COUNT(user_id) DESC
+		LIMIT 5);
 ```
  
 ### 4. Получение списка общих друзей пользователя с id55 с другим пользователем с id 99
