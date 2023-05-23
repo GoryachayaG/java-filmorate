@@ -1,9 +1,9 @@
 package ru.yandex.practicum.filmorate;
 
 import org.junit.Test;
-import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exeptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.services.FilmService;
 
 import java.time.LocalDate;
 
@@ -11,13 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FilmControllerTest {
-    protected FilmController controller = new FilmController();
+    protected FilmService service = new FilmService();
 
     @Test
     public void createValidFilm() {
         Film film = new Film("film", "about this film", LocalDate.parse("2022-01-01"), 40);
-        controller.create(film);
-        assertEquals(film, controller.getFilms().get(1));
+        service.createFilm(film);
+        assertEquals(film, service.findFilmById(1));
     }
 
     @Test
@@ -26,7 +26,7 @@ public class FilmControllerTest {
 
         final ValidationException exception = assertThrows(
                 ValidationException.class,
-                () -> controller.create(film)
+                () -> service.createFilm(film)
         );
 
         assertEquals("Название фильма не может быть пустым", exception.getMessage());
@@ -40,7 +40,7 @@ public class FilmControllerTest {
 
         final ValidationException exception = assertThrows(
                 ValidationException.class,
-                () -> controller.create(film)
+                () -> service.createFilm(film)
         );
 
         assertEquals("Максимальная длина описания — 200 символов", exception.getMessage());
@@ -52,7 +52,7 @@ public class FilmControllerTest {
 
         final ValidationException exception = assertThrows(
                 ValidationException.class,
-                () -> controller.create(film)
+                () -> service.createFilm(film)
         );
 
         assertEquals("Дата релиза не может быть раньше 28 декабря 1895 года", exception.getMessage());
@@ -64,7 +64,7 @@ public class FilmControllerTest {
 
         final ValidationException exception = assertThrows(
                 ValidationException.class,
-                () -> controller.create(film)
+                () -> service.createFilm(film)
         );
 
         assertEquals("Продолжительность фильма должна быть положительной", exception.getMessage());
@@ -76,7 +76,7 @@ public class FilmControllerTest {
 
         final ValidationException exception = assertThrows(
                 ValidationException.class,
-                () -> controller.create(film)
+                () -> service.createFilm(film)
         );
 
         assertEquals("Продолжительность фильма должна быть положительной", exception.getMessage());
@@ -88,7 +88,7 @@ public class FilmControllerTest {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                () -> controller.create(film)
+                () -> service.createFilm(film)
         );
 
         assertEquals("film == null. Нужно заполнить поля", exception.getMessage());
