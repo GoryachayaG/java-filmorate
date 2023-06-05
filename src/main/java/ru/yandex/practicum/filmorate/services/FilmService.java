@@ -71,6 +71,8 @@ public class FilmService {
     }
 
     public Film findFilmById(long filmId) {
+        log.info("Получен запрос к эндпоинту GET для получения всех фильма с id = {}", filmId);
+
         Film result = contains(filmId);
         result.setGenres(filmStorage.findGenres(filmId));
         result.setMpa(ratingMpa.getRatingById(result.getMpa().getId()));
@@ -129,6 +131,8 @@ public class FilmService {
 
     // вывод 10 наиболее популярных фильмов по количеству лайков.
     public List<Film> getTopFilms(Integer count) {
+        log.info("Получен запрос к эндпоинту GET для получения топ популярных фильмов");
+
         List<Film> result = filmStorage.getTopFilms(count);
         result.forEach(film -> {
             film.setGenres(filmStorage.findGenres(film.getId()));

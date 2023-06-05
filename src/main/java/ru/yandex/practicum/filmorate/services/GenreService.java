@@ -17,10 +17,14 @@ public class GenreService {
     private final GenreStorage genreStorage;
 
     public List<Genre> getAllGenres() {
+        log.info("Получен запрос к эндпоинту GET для получения всех жанров");
+
         return genreStorage.getAllGenres();
     }
 
     public Genre getGenreById(int genreId) {
+        log.info("Получен запрос к эндпоинту GET для получения жанра с id = {}", genreId);
+
         contains(genreId);
         return genreStorage.getGenreById(genreId);
     }
