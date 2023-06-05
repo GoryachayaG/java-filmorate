@@ -1,14 +1,11 @@
 package ru.yandex.practicum.filmorate.services;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ru.yandex.practicum.filmorate.exeptions.FriendAlreadyAddedException;
-import ru.yandex.practicum.filmorate.exeptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exeptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storages.user.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storages.user.UserStorage;
 
 import java.time.LocalDate;
@@ -16,13 +13,9 @@ import java.util.*;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final UserStorage userStorage;
-
-    @Autowired
-    public UserService() {
-        this.userStorage = new InMemoryUserStorage();
-    }
 
     private int id = 0;
 
@@ -36,6 +29,7 @@ public class UserService {
         if (isValid(user)) {
             user.setId(generateId());
             userStorage.create(user);
+
             log.info("Пользователь с id = {} успешно создан", user.getId());
         }
         return user;
@@ -86,25 +80,12 @@ public class UserService {
             log.info("Имя пользователя не указано. Используем логин");
             user.setName(user.getLogin());
         }
-
         return true;
     }
 
-    //пользователям не надо одобрять заявки в друзья — добавляем сразу.
-    //если Лена стала другом Саши, то это значит, что Саша теперь друг Лены.
-    public User addFriend(Long userID, Long friendID) {
-        if (!findAllUsers().contains(findUserById(friendID))) {
-            throw new UserNotFoundException(String.format("Пользователь № %d не найден", friendID));
-        } else if (!findAllUsers().contains(findUserById(userID))) {
-            throw new UserNotFoundException(String.format("Пользователь № %d не найден", userID));
-        } else if (findUserById(userID).getFriends().contains(friendID)) {
-            throw new FriendAlreadyAddedException(String.format("Пользователь с id %d " +
-                    "уже дружит с пользователем с id %d", userID, friendID));
-        } else {
-            findUserById(userID).getFriends().add(friendID);
-            findUserById(friendID).getFriends().add(userID);
-        }
-        return findUserById(userID);
+    public User addFriend(Long userId, Long friendId) {
+        userStorage.addFriend(userId, friendId);
+        return userStorage.getUserById(userId);
     }
 
     // удаление из друзей
