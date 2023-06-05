@@ -16,6 +16,7 @@ import java.util.List;
 @Primary
 public class RatingDbStorage implements RatingStorage {
     private final JdbcTemplate jdbcTemplate;
+
     @Override
     public List<Mpa> getAllRatings() {
         String sqlQuery = "SELECT * FROM rating";
