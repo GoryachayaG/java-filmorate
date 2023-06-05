@@ -1,22 +1,22 @@
 package ru.yandex.practicum.filmorate.controllers;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.services.UserService;
+import ru.yandex.practicum.filmorate.storages.user.UserStorage;
 
 import java.util.Collection;
 import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    private final UserStorage userStorage;
 
     @PostMapping
     public User create(@RequestBody User user) {
@@ -55,14 +55,14 @@ public class UserController {
     public User removeFriend(@PathVariable Long userId, @PathVariable Long friendId) {
         log.info("Получен запрос к эндпоинту DELETE от пользователя с id = {}, " +
                 "для удаления из друзей пользователя с id = {}", userId, friendId);
-        return userService.removeFriend(userId, friendId);
+        return userStorage.deleteFriend(userId, friendId);
     }
 
     //возвращаем список пользователей, являющихся его друзьями.
     @GetMapping("/{id}/friends")
     public List<User> getFriends(@PathVariable("id") Long id) {
         log.info("Получен запрос к эндпоинту GET для получения списка друзей пользователя с id = {}", id);
-        return userService.getFriends(id);
+        return userStorage.getFriendsByUserId(id);
     }
 
     //возвращаем список друзей, общих с другим пользователем.
@@ -70,6 +70,6 @@ public class UserController {
     public List<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
         log.info("Получен запрос к эндпоинту GET от пользователя с id = {}, " +
                 "для получения списка общих друзей с пользователем с id = {}", id, otherId);
-        return userService.getCommonFriends(id, otherId);
+        return userStorage.getCommonFriends(id, otherId);
     }
 }
