@@ -16,6 +16,7 @@ import java.util.*;
 public class GenreDbStorage implements GenreStorage {
 
     private final JdbcTemplate jdbcTemplate;
+
     @Override
     public List<Genre> getAllGenres() {
         String sqlQuery = "SELECT * FROM genres";
