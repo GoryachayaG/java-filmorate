@@ -35,6 +35,7 @@ public class UserDbStorage implements UserStorage {
         values.put("birthday", user.getBirthday());
         return values;
     }
+
     @Override
     public User update(User user) {
         String sqlQuery = "UPDATE users SET " +
