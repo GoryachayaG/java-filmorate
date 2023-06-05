@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Primary
-public class RatingDbStorage implements RatingStorage{
+public class RatingDbStorage implements RatingStorage {
     private final JdbcTemplate jdbcTemplate;
     @Override
     public List<Mpa> getAllRatings() {
